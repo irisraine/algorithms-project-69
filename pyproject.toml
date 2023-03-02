@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "algorithms-project-69"
+version = "0.1.0"
+description = ""
+authors = ["Iris-Raine <iris.raine.darkest.star@gmail.com>"]
+readme = "README.md"
+packages = [{include = "algorithms_project_69"}]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
