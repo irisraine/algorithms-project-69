@@ -11,13 +11,14 @@ docs_simple = [
 docs_with_punctuation = docs = [
     {'id': 'doc1', 'text': "I can't shoot straight unless I've had a pint!"},
     {'id': 'doc2', 'text': "Don't shoot shoot shoot that thing at me."},
-    {'id': 'doc3', 'text': "I'm your shooter."}
+    {'id': 'doc3', 'text': "I'm your shooter."},
+    {'id': 'doc4', 'text': "Please don't shoot! If you shoot I gonna die out of fear of gunshooting."}
 ]
 
 empty_docs = []
 
 expected_result_docs_simple = ['doc1']
-expected_result_docs_with_punctuation = ['doc1', 'doc2']
+expected_result_docs_with_punctuation = ['doc2', 'doc4', 'doc1']
 expected_empty = []
 
 
