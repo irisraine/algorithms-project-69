@@ -4,25 +4,24 @@ from math import log
 
 def search(documents, query):
     inverted_index = get_inverted_index(documents)
-    document_terms_count = {
-        document['id']: get_terms_count(document['text'])
+    document_token_count = {
+        document['id']: len(tokenize(document['text']))
         for document in documents
     }
     documents_count = len(documents)
     result_without_relevance = set()
     result_with_relevance = []
     relevance = {}
-    query_terms = re.findall(r'\w+', query)
-    query_terms = [item.lower() for item in query_terms]
-    for query_term in query_terms:
-        documents_has_term = inverted_index.get(query_term)
-        if not documents_has_term:
+    query_tokens = tokenize(query)
+    for query_token in query_tokens:
+        documents_has_token = inverted_index.get(query_token)
+        if not documents_has_token:
             continue
-        relevance_idf = log(documents_count / len(documents_has_term))
-        for document in documents_has_term:
+        relevance_idf = log(documents_count / len(documents_has_token))
+        for document in documents_has_token:
             id = document['id']
             result_without_relevance.update([id])
-            relevance_tf = document['weight'] / document_terms_count[id]
+            relevance_tf = document['weight'] / document_token_count[id]
             relevance_tf_idf = relevance_tf * relevance_idf
             relevance.setdefault(document['id'], 0)
             relevance[document['id']] += relevance_tf_idf
@@ -41,29 +40,31 @@ def search(documents, query):
 
 def get_inverted_index(documents):
     inverted_index = {}
-    terms_all = set()
-    documents_as_list_of_terms = []
+    tokens_all = set()
+    documents_as_list_of_tokens = []
     for document in documents:
-        document_terms = re.findall(r'\w+', document['text'])
-        query_terms = [item.lower() for item in document_terms]
-        documents_as_list_of_terms.append(
-            {'id': document['id'], 'terms': document_terms}
+        document_tokens = tokenize(document['text'])
+        documents_as_list_of_tokens.append(
+            {'id': document['id'], 'tokens': document_tokens}
         )
-        terms_all.update(document_terms)
-    for term in terms_all:
-        inverted_index[term] = []
-        for document in documents_as_list_of_terms:
-            if term in document['terms']:
-                inverted_index[term].append(
+        tokens_all.update(document_tokens)
+    for token in tokens_all:
+        inverted_index[token] = []
+        for document in documents_as_list_of_tokens:
+            if token in document['tokens']:
+                inverted_index[token].append(
                     {
                         'id': document['id'],
-                        'weight': document['terms'].count(term)
+                        'weight': document['tokens'].count(token)
                     }
                 )
 
     return inverted_index
 
 
-def get_terms_count(text):
-    document_terms = re.findall(r'\w+', text)
-    return len(document_terms)
+def tokenize(text):
+    return [get_term(token) for token in text.split(' ')]
+
+
+def get_term(token):
+    return re.sub(r'[^\w\s]', '', token).lower()
