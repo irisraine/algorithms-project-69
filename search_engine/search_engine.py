@@ -4,7 +4,10 @@ from math import log
 
 def search(documents, query):
     inverted_index = get_inverted_index(documents)
-    document_terms_count = {document['id']: get_terms_count(document['text']) for document in documents}
+    document_terms_count = {
+        document['id']: get_terms_count(document['text'])
+        for document in documents
+    }
     documents_count = len(documents)
     result_without_relevance = set()
     result_with_relevance = []
@@ -16,14 +19,15 @@ def search(documents, query):
             continue
         relevance_idf = log(documents_count / len(documents_has_term))
         for document in documents_has_term:
-            result_without_relevance.update([document['id']])
-            relevance_tf = document['weight'] / document_terms_count[document['id']]
+            id = document['id']
+            result_without_relevance.update([id])
+            relevance_tf = document['weight'] / document_terms_count[id]
             relevance_tf_idf = relevance_tf * relevance_idf
             relevance.setdefault(document['id'], 0)
             relevance[document['id']] += relevance_tf_idf
-    for document_id in result_without_relevance:
+    for id in result_without_relevance:
         result_with_relevance.append(
-            {'id': document_id, 'relevance': relevance[document_id]}
+            {'id': id, 'relevance': relevance[id]}
         )
     result_with_relevance.sort(
         key=lambda item: item['relevance'],
