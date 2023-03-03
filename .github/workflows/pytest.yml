@@ -1,0 +1,24 @@
+name: pytest
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: install dependencies
+        run: | 
+          pip install poetry
+          poetry install
+          make tests
+      - name: code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 7ae6583347a98e5cf2b3306f60fd177da5066b34168213da115014ad27b0fa60
+        with:
+          coverageCommand: make coverage
