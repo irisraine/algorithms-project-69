@@ -4,7 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Iris-Raine <iris.raine.darkest.star@gmail.com>"]
 readme = "README.md"
-packages = [{include = "algorithms_project_69"}]
+packages = [
+    {include = "search_engine"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
