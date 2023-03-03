@@ -8,4 +8,4 @@ tests:
 	poetry run pytest
 
 coverage:
-	poetry run pytest --cov=search_engine tests/ --cov-report xml	
+	poetry run pytest --cov=search_engine tests/ --cov-report xml
