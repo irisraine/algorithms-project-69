@@ -6,9 +6,17 @@ docs_simple = [
 ]
 
 expected_inverted_index = {
-    'some': ['doc1', 'doc2'],
-    'text': ['doc1', 'doc2'],
-    'too': ['doc2']
+    'some': [
+        {'id': 'doc1', 'weight': 1},
+        {'id': 'doc2', 'weight': 1}
+    ],
+    'too': [
+        {'id': 'doc2', 'weight': 1}
+    ],
+    'text': [
+        {'id': 'doc1', 'weight': 1},
+        {'id': 'doc2', 'weight': 1}
+    ]
 }
 
 

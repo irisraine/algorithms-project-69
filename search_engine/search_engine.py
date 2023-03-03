@@ -2,19 +2,24 @@ import re
 
 
 def search(documents, query):
+    inverted_index = get_inverted_index(documents)
+    result_without_relevance = set()
     result_with_relevance = []
+    relevance = {}
     query_terms = re.findall(r'\w+', query)
-    for document in documents:
-        document_terms = re.findall(r'\w+', document['text'])
-        relevance = {'match': 0, 'weight': 0}
-        for query_term in query_terms:
-            if query_term in document_terms:
-                relevance['match'] += 1
-                relevance['weight'] += document_terms.count(query_term)
-        if relevance['match']:
-            result_with_relevance.append(
-                {'id': document['id'], 'relevance': relevance}
-            )
+    for query_term in query_terms:
+        documents_has_term = inverted_index.get(query_term)
+        if not documents_has_term:
+            break
+        for document in documents_has_term:
+            result_without_relevance.update([document['id']])
+            relevance.setdefault(document['id'], {'match': 0, 'weight': 0})
+            relevance[document['id']]['match'] += 1
+            relevance[document['id']]['weight'] += document['weight']
+    for document_id in result_without_relevance:
+        result_with_relevance.append(
+            {'id': document_id, 'relevance': relevance[document_id]}
+        )
     result_with_relevance.sort(
         key=lambda item: (
             item['relevance']['match'],
@@ -41,6 +46,11 @@ def get_inverted_index(documents):
         inverted_index[term] = []
         for document in documents_as_list_of_terms:
             if term in document['terms']:
-                inverted_index[term].append(document['id'])
+                inverted_index[term].append(
+                    {
+                        'id': document['id'],
+                        'weight': document['terms'].count(term)
+                    }
+                )
 
     return inverted_index
