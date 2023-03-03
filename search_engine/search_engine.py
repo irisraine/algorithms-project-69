@@ -16,7 +16,10 @@ def search(documents, query):
                 {'id': document['id'], 'relevance': relevance}
             )
     result_with_relevance.sort(
-        key=lambda item: (item['relevance']['match'], item['relevance']['weight']),
+        key=lambda item: (
+            item['relevance']['match'],
+            item['relevance']['weight']
+        ),
         reverse=True
     )
     result = [item['id'] for item in result_with_relevance]
