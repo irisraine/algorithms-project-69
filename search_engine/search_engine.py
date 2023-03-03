@@ -13,6 +13,7 @@ def search(documents, query):
     result_with_relevance = []
     relevance = {}
     query_terms = re.findall(r'\w+', query)
+    query_terms = [item.lower() for item in query_terms]
     for query_term in query_terms:
         documents_has_term = inverted_index.get(query_term)
         if not documents_has_term:
@@ -44,6 +45,7 @@ def get_inverted_index(documents):
     documents_as_list_of_terms = []
     for document in documents:
         document_terms = re.findall(r'\w+', document['text'])
+        query_terms = [item.lower() for item in document_terms]
         documents_as_list_of_terms.append(
             {'id': document['id'], 'terms': document_terms}
         )
