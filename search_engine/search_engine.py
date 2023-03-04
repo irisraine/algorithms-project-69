@@ -83,8 +83,6 @@ def get_idf(documents_as_tokens, token):
         lambda document: token in document['tokens'], documents_as_tokens
     )
     documents_has_token = list(filter_documents_has_token)
-    has_token_count = len(documents_has_token)
-    idf = log2(
-        1 + (documents_count - has_token_count + 1) / (has_token_count + 0.5)
-    )
+    documents_has_token_count = len(documents_has_token)
+    idf = log2((documents_count + 1) / (documents_has_token_count + 0.5))
     return idf
