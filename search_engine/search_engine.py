@@ -15,17 +15,22 @@ def search(documents, query):
         for document in documents_has_token:
             id = document['id']
             result_without_relevance.update([id])
-            relevance.setdefault(document['id'], 0)
-            token_relevance = (list(filter(
+            relevance.setdefault(id, {'match': 0, 'tf-idf': 0})
+            if document in documents_has_token:
+                relevance[id]['match'] += 1
+            token_tf_idf = (list(filter(
                 lambda doc: doc['id'] == id, inverted_index[query_token]
             ))[0]['tf-idf'])
-            relevance[document['id']] += token_relevance
+            relevance[id]['tf-idf'] += token_tf_idf
     for id in result_without_relevance:
         result_with_relevance.append(
             {'id': id, 'relevance': relevance[id]}
         )
     result_with_relevance.sort(
-        key=lambda item: item['relevance'],
+        key=lambda item: (
+            item['relevance']['match'],
+            item['relevance']['tf-idf']
+        ),
         reverse=True
     )
     result = [item['id'] for item in result_with_relevance]
@@ -50,7 +55,7 @@ def get_inverted_index(documents):
             list(filter(
                 lambda item: token in item['tokens'], documents_as_tokens
             )))
-        idf = log(1 + documents_count / documents_has_token)
+        idf = log(documents_count / documents_has_token)
         for document in documents_as_tokens:
             if token in document['tokens']:
                 tf = document['tokens'].count(token) / len(document['tokens'])
