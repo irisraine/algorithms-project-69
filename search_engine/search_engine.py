@@ -50,7 +50,7 @@ def get_inverted_index(documents):
             list(filter(
                 lambda item: token in item['tokens'], documents_as_tokens
             )))
-        idf = log(documents_count / documents_has_token)
+        idf = log(1 + documents_count / documents_has_token)
         for document in documents_as_tokens:
             if token in document['tokens']:
                 tf = document['tokens'].count(token) / len(document['tokens'])
