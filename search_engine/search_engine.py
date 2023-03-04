@@ -18,7 +18,6 @@ def search(documents, query):
         result_with_relevance,
         key=result_with_relevance.get,
         reverse=True)
-
     return result
 
 
@@ -51,12 +50,12 @@ def get_inverted_index(documents):
 def tokenize(text):
     tokens = []
     text_lines = text.split('\n')
-    for line in text_lines:
-        line_tokenized = [
+    for text_line in text_lines:
+        text_line_tokenized = [
             get_term(token)
-            for token in line.split(' ') if token
+            for token in text_line.split(' ') if token
         ]
-        tokens.extend(line_tokenized)
+        tokens.extend(text_line_tokenized)
     return tokens
 
 
@@ -74,7 +73,9 @@ def get_tf_idf(document_id, documents_has_token):
 
 
 def get_tf(document_as_tokens, token):
-    return document_as_tokens.count(token) / len(document_as_tokens)
+    document_tokens_count = len(document_as_tokens)
+    token_in_document_count = document_as_tokens.count(token)
+    return token_in_document_count / document_tokens_count
 
 
 def get_idf(documents_as_tokens, token):
