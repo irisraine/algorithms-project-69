@@ -50,7 +50,7 @@ def get_inverted_index(documents):
             list(filter(
                 lambda item: token in item['tokens'], documents_as_tokens
             )))
-        idf = log2(1 + (documents_count - documents_has_token + 1) / (documents_has_token + 0.5))
+        idf = get_idf(documents_count, documents_has_token)
         for document in documents_as_tokens:
             if token in document['tokens']:
                 tf = document['tokens'].count(token) / len(document['tokens'])
@@ -64,10 +64,16 @@ def tokenize(text):
     tokens = []
     lines = text.split('\n')
     for line in lines:
-        line_as_list_of_tokens = [get_term(token) for token in line.split(' ') if token]
+        line_as_list_of_tokens = [
+            get_term(token)
+            for token in line.split(' ') if token]
         tokens.extend(line_as_list_of_tokens)
     return tokens
 
 
 def get_term(token):
     return re.sub(r'[^\w\s]', '', token).lower()
+
+
+def get_idf(count_all, has_token):
+    return log2(1 + (count_all - has_token + 1) / (has_token + 0.5))
