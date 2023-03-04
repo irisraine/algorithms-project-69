@@ -7,15 +7,15 @@ docs_simple = [
 
 expected_inverted_index = {
     'some': [
-        {'id': 'doc1', 'tf-idf': 0.0},
-        {'id': 'doc2', 'tf-idf': 0.0}
+        {'id': 'doc1', 'tf-idf': 0.2427},
+        {'id': 'doc2', 'tf-idf': 0.1618}
     ],
     'text': [
-        {'id': 'doc1', 'tf-idf': 0.0},
-        {'id': 'doc2', 'tf-idf': 0.0}
+        {'id': 'doc1', 'tf-idf': 0.2427},
+        {'id': 'doc2', 'tf-idf': 0.1618}
     ],
     'too': [
-        {'id': 'doc2', 'tf-idf': 0.231}
+        {'id': 'doc2', 'tf-idf': 0.4075}
     ]
 }
 
