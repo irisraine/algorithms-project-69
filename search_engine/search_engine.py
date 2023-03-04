@@ -4,28 +4,20 @@ from math import log2
 
 def search(documents, query):
     inverted_index = get_inverted_index(documents)
-    result_without_relevance = set()
-    result_with_relevance = []
-    relevance = {}
+    result_with_relevance = {}
     query_tokens = tokenize(query)
     for query_token in query_tokens:
         documents_has_token = inverted_index.get(query_token)
         if not documents_has_token:
             continue
         for document in documents_has_token:
-            result_without_relevance.update([document['id']])
-            relevance.setdefault(document['id'], 0)
+            result_with_relevance.setdefault(document['id'], 0)
             token_tf_idf = get_tf_idf(document['id'], documents_has_token)
-            relevance[document['id']] += token_tf_idf
-    for document_id in result_without_relevance:
-        result_with_relevance.append(
-            {'id': document_id, 'relevance': relevance[document_id]}
-        )
-    result_with_relevance.sort(
-        key=lambda document: document['relevance'],
-        reverse=True
-    )
-    result = [item['id'] for item in result_with_relevance]
+            result_with_relevance[document['id']] += token_tf_idf
+    result = sorted(
+        result_with_relevance,
+        key=result_with_relevance.get,
+        reverse=True)
 
     return result
 
