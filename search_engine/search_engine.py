@@ -13,16 +13,13 @@ def search(documents, query):
         if not documents_has_token:
             continue
         for document in documents_has_token:
-            id = document['id']
-            result_without_relevance.update([id])
-            relevance.setdefault(id, 0)
-            token_tf_idf = (list(filter(
-                lambda doc: doc['id'] == id, inverted_index[query_token]
-            ))[0]['tf-idf'])
-            relevance[id] += token_tf_idf
-    for id in result_without_relevance:
+            result_without_relevance.update([document['id']])
+            relevance.setdefault(document['id'], 0)
+            token_tf_idf = get_tf(document['id'], documents_has_token)
+            relevance[document['id']] += token_tf_idf
+    for document_id in result_without_relevance:
         result_with_relevance.append(
-            {'id': id, 'relevance': relevance[id]}
+            {'id': document_id, 'relevance': relevance[document_id]}
         )
     result_with_relevance.sort(
         key=lambda item: (item['relevance']),
@@ -62,12 +59,13 @@ def get_inverted_index(documents):
 
 def tokenize(text):
     tokens = []
-    lines = text.split('\n')
-    for line in lines:
-        line_as_list_of_tokens = [
+    text_lines = text.split('\n')
+    for line in text_lines:
+        line_tokenized = [
             get_term(token)
-            for token in line.split(' ') if token]
-        tokens.extend(line_as_list_of_tokens)
+            for token in line.split(' ') if token
+        ]
+        tokens.extend(line_tokenized)
     return tokens
 
 
@@ -75,5 +73,13 @@ def get_term(token):
     return re.sub(r'[^\w\s]', '', token).lower()
 
 
-def get_idf(count_all, has_token):
-    return log2(1 + (count_all - has_token + 1) / (has_token + 0.5))
+def get_tf(document_id, documents_has_token):
+    filter_token = filter(
+        lambda document: document['id'] == document_id, documents_has_token
+    )
+    tf_idf = list(filter_token)[0]['tf-idf']
+    return tf_idf
+
+
+def get_idf(documents_count, documents_has_token):
+    return log2(1 + (documents_count - documents_has_token + 1) / (documents_has_token + 0.5))
