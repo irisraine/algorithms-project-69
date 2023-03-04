@@ -75,7 +75,8 @@ def get_tf_idf(document_id, documents_has_token):
 def get_tf(document_as_tokens, token):
     document_tokens_count = len(document_as_tokens)
     token_in_document_count = document_as_tokens.count(token)
-    return token_in_document_count / document_tokens_count
+    tf = token_in_document_count / document_tokens_count
+    return tf
 
 
 def get_idf(documents_as_tokens, token):
