@@ -26,26 +26,25 @@ def get_inverted_index(documents):
     inverted_index = {}
     tokens_all = set()
     documents_as_tokens = []
-    documents_count = len(documents)
     for document in documents:
         document_tokens = tokenize(document['text'])
-        documents_as_tokens.append(
-            {'id': document['id'], 'tokens': document_tokens}
-        )
+        current_document_tokenized = {
+            'id': document['id'],
+            'tokens': document_tokens
+        }
+        documents_as_tokens.append(current_document_tokenized)
         tokens_all.update(document_tokens)
     for token in tokens_all:
         inverted_index[token] = []
-        documents_has_token = len(
-            list(filter(
-                lambda item: token in item['tokens'], documents_as_tokens
-            )))
-        idf = get_idf(documents_count, documents_has_token)
+        idf = get_idf(documents_as_tokens, token)
         for document in documents_as_tokens:
             if token in document['tokens']:
-                tf = document['tokens'].count(token) / len(document['tokens'])
-                inverted_index[token].append(
-                    {'id': document['id'], 'tf-idf': round(tf * idf, 4)}
-                )
+                tf = get_tf(document['tokens'], token)
+                current_document_with_relevance = {
+                    'id': document['id'],
+                    'tf-idf': round(tf * idf, 4)
+                }
+                inverted_index[token].append(current_document_with_relevance)
     return inverted_index
 
 
@@ -66,12 +65,26 @@ def get_term(token):
 
 
 def get_tf_idf(document_id, documents_has_token):
-    filter_token = filter(
+    filter_document_has_token = filter(
         lambda document: document['id'] == document_id, documents_has_token
     )
-    tf_idf = list(filter_token)[0]['tf-idf']
+    document_has_token = list(filter_document_has_token)[0]
+    tf_idf = document_has_token['tf-idf']
     return tf_idf
 
 
-def get_idf(count, has_token):
-    return log2(1 + (count - has_token + 1) / (has_token + 0.5))
+def get_tf(document_as_tokens, token):
+    return document_as_tokens.count(token) / len(document_as_tokens)
+
+
+def get_idf(documents_as_tokens, token):
+    documents_count = len(documents_as_tokens)
+    filter_documents_has_token = filter(
+        lambda document: token in document['tokens'], documents_as_tokens
+    )
+    documents_has_token = list(filter_documents_has_token)
+    has_token_count = len(documents_has_token)
+    idf = log2(
+        1 + (documents_count - has_token_count + 1) / (has_token_count + 0.5)
+    )
+    return idf
