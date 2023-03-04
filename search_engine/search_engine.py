@@ -81,5 +81,5 @@ def get_tf_idf(document_id, documents_has_token):
     return tf_idf
 
 
-def get_idf(documents_count, documents_has_token):
-    return log2(documents_count / documents_has_token)
+def get_idf(count, has_token):
+    return log2(1 + (count - has_token + 1) / (has_token + 0.5))
