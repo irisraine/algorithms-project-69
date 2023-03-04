@@ -13,7 +13,7 @@ docs_with_punctuation = docs = [
     {'id': 'doc1', 'text': "I can't shoot straight unless I've had a pint!"},
     {'id': 'doc2', 'text': "Don't shoot shoot shoot that thing at me."},
     {'id': 'doc3', 'text': "I'm your shooter."},
-    {'id': 'doc4', 'text': "Please don't shoot! If you shoot I gonna die out of fear of gunshooting."}
+    {'id': 'doc4', 'text': "Please don't shoot! If you shoot I gonna die."}
 ]
 
 empty_docs = []
